@@ -41,6 +41,20 @@ You also need:
 A Mac helps. ffmpeg uses the Mac's hardware decoder for most camera files, which makes filmstrips and motion
 scans several times faster.
 
+## Connect your editing software
+
+Do this once, before installing the skills. For Premiere Pro with premiere-pro-mcp, on the computer that runs
+Premiere:
+
+1. Install the server: `npm install -g premiere-pro-mcp` (needs Node.js).
+2. Install its Premiere panel: `premiere-pro-mcp --install-cep`.
+3. Add it to Claude Code: `claude mcp add --scope user premiere-pro -- premiere-pro-mcp`.
+4. Restart Premiere, open a project, then open Window > Extensions > MCP for Adobe Premiere Pro.
+5. Run `premiere-pro-mcp --doctor`. It reports anything that isn't connected.
+
+Their [README](https://github.com/leancoderkavy/premiere-pro-mcp) covers other routes, including a Claude Desktop
+bundle that doesn't need Node.js. Resolve and Final Cut users should follow their MCP's own setup.
+
 ## Install
 
 In Claude Code:
@@ -49,6 +63,8 @@ In Claude Code:
 /plugin marketplace add scrmedia/wedding-edit-skills
 /plugin install wedding-edit-skills@wedding-edit-skills
 ```
+
+Then start a new Claude Code session (or run `/reload-plugins`) so the skills load.
 
 ## First run
 
@@ -60,6 +76,10 @@ In Claude Code:
    blind and scores itself against what you actually kept.
 3. Try culling first. It's the quickest to check and the least risky. Ceremony and speeches come next, then
    the doc edit, which builds on both.
+
+Allow time. Learning your style or culling a full wedding takes one to three hours, nearly all of it running in
+the background while Claude makes and reads filmstrips of every clip, so you can keep working in Premiere. Big
+weddings also take a good share of your Claude plan's usage, because Claude looks at thousands of frames.
 
 You can skip step 2 and use the defaults. Expect the cull to look like someone else's, because it is.
 
@@ -75,7 +95,14 @@ Wedding/
   Evening/First Dance/, Evening/Dancing/, ...
 ```
 
+Sort a new wedding into these folders before culling. Which moment a clip belongs to is your call, so the
+skills don't guess it.
+
 Ceremony and speeches are cut from a multicam source sequence you've already synced in Premiere.
+
+If an older wedding's footage has since gone back into camera folders (an archive drive, say), the learning skill
+can still use it. It reads which moment each clip was in from your saved Premiere project and matches the files
+by name.
 
 ## It gets better as you edit
 

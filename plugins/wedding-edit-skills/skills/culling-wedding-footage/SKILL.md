@@ -22,9 +22,14 @@ wedding they have already culled, then carry on with these defaults if they'd ra
 
 ## Steps
 
+Tell the editor up front: a full wedding takes one to three hours, nearly all of it in the background (making
+filmstrips and reading them). They can keep editing in the meantime.
+
 1. **Inventory:** `inventory.py <wedding folder> inventory.json` lists every clip by part and moment
-   (`Morning/<moment>`, `Reception/<moment>`, `Evening/<moment>`, top-level `Aerial`). If the raw sits in camera
-   folders instead, build the same JSON with a `moment` field per file. *Done when* every moment has its files.
+   (`Morning/<moment>`, `Reception/<moment>`, `Evening/<moment>`, top-level `Aerial`). A new wedding still in
+   camera folders needs sorting into moment folders first: ask the editor to do it, since the moments are
+   their call. An edited wedding whose raw went back into camera folders: add `--from-project <their .prproj>`
+   to recover each clip's moment from the paths the project recorded. *Done when* every moment has its files.
 2. **Motion scan** in the background: `file_motion.py inventory.json motion.json --jobs 4` (camera shift every
    0.1 s; about 15 min per 250 clips; 10-bit H.264 decodes in software, slowly).
 3. **Make the sheets** in one background run, moment after moment: `cull_strips.py

@@ -16,14 +16,16 @@ skills' scripts are in `${CLAUDE_PLUGIN_ROOT}/skills/<skill>/scripts/`.
 ## Steps
 
 1. **Check the setup.** `check_setup.py`, then the NLE's MCP: `get_premiere_state` (Premiere), or the
-   equivalent call for the editor's NLE. Fix anything marked `--` that the editor's jobs need. Culling and doc
+   equivalent call for the editor's NLE. No MCP tools at all: point the editor at the README's "Connect your
+   editing software" section and stop until they're connected. Fix anything marked `--` that the editor's jobs need. Culling and doc
    edits don't need whisper. *Done when* the script says ready and the MCP answers.
 2. **Pick the reference wedding** with one AskUserQuestion: a wedding they edited themselves, with its saved
    project, its raw footage still reachable, and the sequences that show their style (the cull stringouts, the
-   ceremony and speeches cuts, the doc edit). Ask which sequences are which. Ask whether the stringouts' moment
-   folders still exist. If the raw now sits in camera folders, rebuild each clip's moment from the paths the
-   project recorded and match on file name.
-3. **Measure the cull.** `inventory.py` (culling skill) on the wedding folder, then `cull_style.py <project>
+   ceremony and speeches cuts, the doc edit). Ask which sequences are which. If the raw has gone back into
+   camera folders since, `inventory.py <wedding folder> inventory.json --from-project <their .prproj>` recovers
+   each clip's moment. Tell them it takes one to three hours, mostly in the background.
+3. **Measure the cull.** `inventory.py` (culling skill) on the wedding folder (with `--from-project` if
+   needed), then `cull_style.py <project>
    inventory.json style/`. It writes `their_plan.json` (their cull in plan form) and prints keep rates, select
    lengths, trims, colours and clip order per moment. Then look at what they kept against what they dropped:
    `cull_strips.py "inventory.json:<Moment>" style/selects.json sheets/<moment>` boxes their kept ranges in

@@ -1,9 +1,13 @@
 """List every raw clip of a wedding by part of the day and moment.
-python3 inventory.py <wedding folder> <out.json>
+python3 inventory.py <wedding folder> <out.json> [--from-project <project.prproj>]
   -> {path: {"part", "moment", "dur", "ct", "fps", "w"}}
 Moments are the folders under Morning/, Reception/, Evening/; a top-level Aerial (or Drone) folder is its own
 moment with part "Aerial". Ceremony and Speeches are skipped (they are multicams). ct = capture time from the
 file's creation_time tag, for ordering.
+
+--from-project: for a wedding whose raw has since gone back into camera folders (an archive). The moment of each
+clip comes from the paths the editor's project recorded (.../Morning/Bride Prep/A7S-9031.MP4), matched by file
+name to the clips found anywhere under the wedding folder. File names must be unique across cameras.
 """
 import glob, json, os, subprocess, sys
 from concurrent.futures import ThreadPoolExecutor
@@ -12,12 +16,28 @@ if len(sys.argv) < 3:
 
 root, out = sys.argv[1], sys.argv[2]
 files = []
-for part in ('Morning', 'Reception', 'Evening'):
+if '--from-project' in sys.argv:
+    import gzip, re
+    proj = sys.argv[sys.argv.index('--from-project') + 1]
+    raw = open(proj, 'rb').read()
+    text = (gzip.decompress(raw) if raw[:2] == b'\x1f\x8b' else raw).decode('utf8', 'replace')
+    where = {}
+    for path in re.findall(r'<(?:ActualMediaFilePath|FilePath)>([^<]*/[^<]+)<', text):
+        parts = path.replace('\\', '/').split('/')
+        if len(parts) >= 3 and parts[-3] in ('Morning', 'Reception', 'Evening') and parts[-2] not in ('Ceremony', 'Speeches'):
+            where[parts[-1]] = (parts[-3], parts[-2])
+        elif len(parts) >= 2 and parts[-2] in ('Aerial', 'Drone'):
+            where[parts[-1]] = ('Aerial', parts[-2])
+    for f in glob.glob(os.path.join(root, '**', '*'), recursive=True):
+        if os.path.basename(f) in where:
+            files.append((f, *where[os.path.basename(f)]))
+    print(f'{len(files)} of {len(where)} clips the project placed in moments were found under {root}')
+for part in ('Morning', 'Reception', 'Evening') if not files else ():
     for f in glob.glob(os.path.join(root, part, '*', '*')):
         moment = os.path.basename(os.path.dirname(f))
         if moment not in ('Ceremony', 'Speeches'):
             files.append((f, part, moment))
-for aerial in ('Aerial', 'Drone'):
+for aerial in ('Aerial', 'Drone') if not any(p == 'Aerial' for _, p, _ in files) else ():
     files += [(f, 'Aerial', aerial) for f in glob.glob(os.path.join(root, aerial, '*'))]
 files = [x for x in files if x[0].upper().endswith(('.MP4', '.MOV'))]
 
