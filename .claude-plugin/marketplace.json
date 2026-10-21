@@ -1,0 +1,14 @@
+{
+  "name": "wedding-edit-skills",
+  "description": "Wedding filmmaking skills for Claude Code: culling, ceremony and speeches multicams, and doc edits.",
+  "owner": {
+    "name": "Blue Ridge Films"
+  },
+  "plugins": [
+    {
+      "name": "wedding-edit-skills",
+      "source": "./plugins/wedding-edit-skills",
+      "description": "Claude Code skills that cull wedding footage, cut ceremony and speeches multicams, and build doc edits in Premiere Pro, in your own style."
+    }
+  ]
+}

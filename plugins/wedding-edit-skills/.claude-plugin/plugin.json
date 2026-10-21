@@ -1,0 +1,6 @@
+{
+  "name": "wedding-edit-skills",
+  "version": "1.0.0",
+  "description": "Claude Code skills that cull wedding footage, cut ceremony and speeches multicams, and build doc edits in Premiere Pro, in your own style.",
+  "author": { "name": "Blue Ridge Films" }
+}
